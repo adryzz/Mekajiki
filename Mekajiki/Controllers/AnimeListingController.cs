@@ -22,7 +22,7 @@ namespace Mekajiki.Controllers
         [HttpGet(Name = "GetAnimeListing")]
         public AnimeListing Get()
         {
-            return AnimeListingUtils.GetListing("/");
+            return AnimeListingUtils.GetListing();
         }
     }
 }
