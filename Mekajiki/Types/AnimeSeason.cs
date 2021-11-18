@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,10 +35,12 @@ namespace Mekajiki.Types
 
                 if (found)
                 {
+                    string name = Path.GetFileName(episodeFile);
                     //add each file
                     Episodes.Add(new AnimeEpisode
                     {
-                        FileName = Path.GetFileName(episodeFile)
+                        FileName = name,
+                        Name = Path.GetFileNameWithoutExtension(TextUtils.RemoveTextInBrackets(name).Trim())
                     });
                 }
             }
@@ -45,18 +48,31 @@ namespace Mekajiki.Types
 
         public void Sort()
         {
+            int addIndex = 0;
             //order episodes by their number
             string[] remove = { "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p", "mp4" };
             SortedDictionary<int, IAnimeEpisode> episodes2 = new();
             foreach (IAnimeEpisode e in Episodes)
             {
-                string name = e.FileName;
+                string name = e.Name;
                 foreach (string s in remove)
                 {
                     name = name.Replace(s, "");
                 }
-                        
-                episodes2.Add(int.Parse(string.Join("", name.Where(char.IsDigit))), e);
+
+                string indexString = string.Join("", name.Where(char.IsDigit));
+                if (string.IsNullOrEmpty(indexString))
+                {
+                    indexString = Random.Shared.Next().ToString();
+                }
+
+                int index = int.Parse(indexString) + addIndex;
+                while (episodes2.ContainsKey(index))
+                {
+                    addIndex++;
+                    index++;
+                }
+                episodes2.Add(index, e);
             }
 
             Episodes = episodes2.Values.ToList();
