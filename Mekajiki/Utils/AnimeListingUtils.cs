@@ -17,7 +17,7 @@ namespace Mekajiki.Data
         public static AnimeListing GetListing()
         {
             if (AnimeListing.Cached != null && AnimeListing.CacheCreationTime != null &&
-                (DateTime.Now - AnimeListing.CacheCreationTime) > Program.Config.LibraryCacheInvalidationTime)
+                (DateTime.Now - AnimeListing.CacheCreationTime) < Program.Config.LibraryCacheInvalidationTime)
             {
                 return AnimeListing.Cached;
             }
@@ -40,14 +40,14 @@ namespace Mekajiki.Data
             {
                 AnimeSeries series = new AnimeSeries();
                 series.Seasons = new List<AnimeSeason>();
-                series.DirectoryName = Path.GetDirectoryName(seriesDir);
+                series.DirectoryName = Path.GetFileName(seriesDir);
                 series.Name = series.DirectoryName;
                 //find all seasons
                 IEnumerable<string> seasonDirs = Directory.EnumerateDirectories(seriesDir);
                 foreach (var seasonDir in seasonDirs)
                 {
                     AnimeSeason season = new AnimeSeason();
-                    season.DirectoryName = Path.GetDirectoryName(seasonDir);
+                    season.DirectoryName = Path.GetFileName(seasonDir);
                     season.Name = season.DirectoryName;
                     
                     //find all episodes
