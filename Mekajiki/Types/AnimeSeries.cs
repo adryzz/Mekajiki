@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Mekajiki.Data;
 
 namespace Mekajiki.Types
 {
@@ -13,7 +14,7 @@ namespace Mekajiki.Types
         {
             Seasons = new List<IAnimeSeason>();
             DirectoryName = Path.GetFileName(seriesDir);
-            Name = DirectoryName;
+            Name = TextUtils.RemoveTextInBrackets(DirectoryName);
             //find all seasons
             IEnumerable<string> seasonDirs = Directory.EnumerateDirectories(seriesDir);
             foreach (var seasonDir in seasonDirs)

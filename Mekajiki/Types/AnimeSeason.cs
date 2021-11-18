@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Mekajiki.Data;
 
 namespace Mekajiki.Types
 {
@@ -13,11 +14,11 @@ namespace Mekajiki.Types
         public AnimeSeason(string seasonDir, string[] fileTypes)
         {
             DirectoryName = Path.GetFileName(seasonDir);
-            Name = DirectoryName;
+            Name = TextUtils.RemoveTextInBrackets(DirectoryName);
                     
             //find all episodes
             IEnumerable<string> episodeFiles = Directory.EnumerateFiles(seasonDir);
-            List<IAnimeEpisode> episodes = new();
+            Episodes = new();
             foreach (string episodeFile in episodeFiles)
             {
                 //check if they have a valid extension
@@ -34,7 +35,7 @@ namespace Mekajiki.Types
                 if (found)
                 {
                     //add each file
-                    episodes.Add(new AnimeEpisode
+                    Episodes.Add(new AnimeEpisode
                     {
                         FileName = Path.GetFileName(episodeFile)
                     });
