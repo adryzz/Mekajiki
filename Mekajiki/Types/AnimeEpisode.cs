@@ -1,12 +1,7 @@
 namespace Mekajiki.Types
 {
-    public class AnimeEpisode
+    public class AnimeEpisode : IAnimeEpisode
     {
-        public AnimeEpisode()
-        {
-            
-        }
-
         public int? EpisodeIndex { get; set; }
         public string FileName { get; set; }
     }

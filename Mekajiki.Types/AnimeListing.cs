@@ -9,7 +9,7 @@ namespace Mekajiki.Types
     {
         public static AnimeListing? Cached;
 
-        public ImmutableArray<AnimeSeries> Series
+        public ImmutableArray<IAnimeSeries> Series
         {
             get => _series.ToImmutableArray();
             set
@@ -20,7 +20,7 @@ namespace Mekajiki.Types
             }
         }
 
-        private List<AnimeSeries> _series;
+        private List<IAnimeSeries> _series;
 
         public static DateTime? CacheCreationTime { get; set; }
     }

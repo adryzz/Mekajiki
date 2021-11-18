@@ -31,67 +31,14 @@ namespace Mekajiki.Data
         /// <param name="path"></param>
         private static AnimeListing getListing(string path, string[] fileTypes)
         {
-            AnimeListing listing = new AnimeListing();
-            List<AnimeSeries> seriesList = new List<AnimeSeries>();
+            AnimeListing listing = new();
+            List<IAnimeSeries> seriesList = new();
             
             //find all directories
             IEnumerable<string> seriesDirs = Directory.EnumerateDirectories(path);
             foreach (var seriesDir in seriesDirs)
             {
-                AnimeSeries series = new AnimeSeries();
-                series.Seasons = new List<AnimeSeason>();
-                series.DirectoryName = Path.GetFileName(seriesDir);
-                series.Name = series.DirectoryName;
-                //find all seasons
-                IEnumerable<string> seasonDirs = Directory.EnumerateDirectories(seriesDir);
-                foreach (var seasonDir in seasonDirs)
-                {
-                    AnimeSeason season = new AnimeSeason();
-                    season.DirectoryName = Path.GetFileName(seasonDir);
-                    season.Name = season.DirectoryName;
-                    
-                    //find all episodes
-                    IEnumerable<string> episodeFiles = Directory.EnumerateFiles(seasonDir);
-                    List<AnimeEpisode> episodes = new List<AnimeEpisode>();
-                    foreach (string episodeFile in episodeFiles)
-                    {
-                        //check if they have a valid extension
-                        bool found = false;
-                        foreach (var type in fileTypes)
-                        {
-                            if (episodeFile.EndsWith(type))
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (found)
-                        {
-                            //add each file
-                            episodes.Add(new AnimeEpisode
-                            {
-                                FileName = Path.GetFileName(episodeFile)
-                            });
-                        }
-                    }
-                    
-                    //order episodes by their number
-                    string[] remove = { "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p", "mp4" };
-                    SortedDictionary<int, AnimeEpisode> episodes2 = new SortedDictionary<int, AnimeEpisode>();
-                    foreach (AnimeEpisode e in episodes)
-                    {
-                        string name = e.FileName;
-                        foreach (string s in remove)
-                        {
-                            name = name.Replace(s, "");
-                        }
-                        episodes2.Add(int.Parse(string.Join("", name.Where(char.IsDigit))), e);
-                    }
-
-                    season.Episodes = episodes2.Values.ToList();
-                    series.Seasons.Add(season);
-                }
+                AnimeSeries series = new(seriesDir, fileTypes);
                 seriesList.Add(series);
             }
 
