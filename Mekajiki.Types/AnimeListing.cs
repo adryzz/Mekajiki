@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Mekajiki.Types
 {
@@ -9,14 +11,16 @@ namespace Mekajiki.Types
 
         public ImmutableArray<AnimeSeries> Series
         {
-            get => Series;
+            get => _series.ToImmutableArray();
             set
             {
                 CacheCreationTime = DateTime.Now;
-                Series = value;
+                _series = value.ToList();
                 Cached = this;
             }
         }
+
+        private List<AnimeSeries> _series;
 
         public static DateTime? CacheCreationTime { get; set; }
     }

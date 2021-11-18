@@ -39,6 +39,9 @@ namespace Mekajiki.Data
             foreach (var seriesDir in seriesDirs)
             {
                 AnimeSeries series = new AnimeSeries();
+                series.Seasons = new List<AnimeSeason>();
+                series.DirectoryName = Path.GetDirectoryName(seriesDir);
+                series.Name = series.DirectoryName;
                 //find all seasons
                 IEnumerable<string> seasonDirs = Directory.EnumerateDirectories(seriesDir);
                 foreach (var seasonDir in seasonDirs)
