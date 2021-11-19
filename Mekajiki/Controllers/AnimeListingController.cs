@@ -22,7 +22,7 @@ namespace Mekajiki.Controllers
         }
 
         [HttpGet(Name = "GetAnimeListing")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AnimeListing))]
+        [ProducesResponseType(StatusCodes.Status302Found, Type = typeof(AnimeListing))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Get()
         {
