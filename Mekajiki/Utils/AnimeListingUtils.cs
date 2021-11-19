@@ -16,12 +16,22 @@ namespace Mekajiki.Data
         /// </summary>
         public static AnimeListing GetListing()
         {
-            if (AnimeListing.Cached != null && AnimeListing.CacheCreationTime != null &&
-                (DateTime.Now - AnimeListing.CacheCreationTime) < Program.Config.LibraryCacheInvalidationTime)
+            if (AnimeListing.Cached == null || AnimeListing.CacheCreationTime == null)
             {
-                return AnimeListing.Cached;
+                return getListing(Program.Config.LibraryPath, Program.Config.VideoFileTypes, true);
             }
-            return getListing(Program.Config.LibraryPath, Program.Config.VideoFileTypes);
+            else
+            {
+                if ((DateTime.Now - AnimeListing.CacheCreationTime) < Program.Config.LibraryCacheInvalidationTime)
+                {
+                    return AnimeListing.Cached;
+                }
+                else
+                {
+                    return getListing(Program.Config.LibraryPath, Program.Config.VideoFileTypes, false);
+                }
+            }
+            
         }
         
         /// <summary>
@@ -29,7 +39,7 @@ namespace Mekajiki.Data
         /// Root -> Series -> Season -> Video files
         /// </summary>
         /// <param name="path"></param>
-        private static AnimeListing getListing(string path, string[] fileTypes)
+        private static AnimeListing getListing(string path, string[] fileTypes, bool setIds)
         {
             AnimeListing listing = new();
             List<IAnimeSeries> seriesList = new();
@@ -38,7 +48,7 @@ namespace Mekajiki.Data
             IEnumerable<string> seriesDirs = Directory.EnumerateDirectories(path);
             foreach (var seriesDir in seriesDirs)
             {
-                AnimeSeries series = new(seriesDir, fileTypes);
+                AnimeSeries series = new(seriesDir, fileTypes, setIds);
                 seriesList.Add(series);
             }
 

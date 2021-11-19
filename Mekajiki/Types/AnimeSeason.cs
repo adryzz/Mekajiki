@@ -12,7 +12,7 @@ namespace Mekajiki.Types
         public string DirectoryName { get; set; }
         public List<IAnimeEpisode> Episodes { get; set; }
 
-        public AnimeSeason(string seasonDir, string[] fileTypes)
+        public AnimeSeason(string seasonDir, string[] fileTypes, bool setIds)
         {
             DirectoryName = Path.GetFileName(seasonDir);
             Name = TextUtils.RemoveTextInBrackets(DirectoryName);
@@ -40,7 +40,9 @@ namespace Mekajiki.Types
                     Episodes.Add(new AnimeEpisode
                     {
                         FileName = name,
-                        Name = Path.GetFileNameWithoutExtension(TextUtils.RemoveTextInBrackets(name).Trim())
+                        Name = Path.GetFileNameWithoutExtension(TextUtils.RemoveTextInBrackets(name).Trim()),
+                        FilePath = episodeFile,
+                        EpisodeId = setIds ?  Guid.NewGuid() : Guid.Empty
                     });
                 }
             }

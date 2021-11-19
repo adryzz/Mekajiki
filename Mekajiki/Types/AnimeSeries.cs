@@ -10,7 +10,7 @@ namespace Mekajiki.Types
         public string DirectoryName { get; set; }
         public List<IAnimeSeason> Seasons { get; set; }
 
-        public AnimeSeries(string seriesDir, string[] fileTypes)
+        public AnimeSeries(string seriesDir, string[] fileTypes, bool setIds)
         {
             Seasons = new List<IAnimeSeason>();
             DirectoryName = Path.GetFileName(seriesDir);
@@ -19,7 +19,7 @@ namespace Mekajiki.Types
             IEnumerable<string> seasonDirs = Directory.EnumerateDirectories(seriesDir);
             foreach (var seasonDir in seasonDirs)
             {
-                AnimeSeason season = new(seasonDir, fileTypes);
+                AnimeSeason season = new(seasonDir, fileTypes, setIds);
                 season.Sort();
                 Seasons.Add(season);
             }
