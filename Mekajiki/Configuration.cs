@@ -6,11 +6,25 @@ namespace Mekajiki
 {
     public class Configuration
     {
+        /// <summary>
+        /// The path where all the video files are located
+        /// </summary>
         public string LibraryPath { get; set; }
 
+        /// <summary>
+        /// All the file extensions to include in the indexing
+        /// </summary>
         public string[] VideoFileTypes { get; set; } = { "mp4", "mkv" };
         
+        /// <summary>
+        /// The time it takes for the cache of the listing to invalidate and flag as not up to date
+        /// </summary>
         public TimeSpan LibraryCacheInvalidationTime { get; set; } = TimeSpan.FromMinutes(15);
+
+        /// <summary>
+        /// The buffer size of the video stream
+        /// </summary>
+        public int VideoBufferSize { get; set; } = 65536;
 
         public static Configuration? FromFile(string name)
         {

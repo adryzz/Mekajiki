@@ -21,6 +21,8 @@ namespace Mekajiki
                 Config.Save("config.json");
             }
             
+            Security.SecurityManager.Initialize();
+            
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

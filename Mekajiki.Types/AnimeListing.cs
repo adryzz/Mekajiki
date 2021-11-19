@@ -48,11 +48,11 @@ namespace Mekajiki.Types
             }
         }
 
-        private List<IAnimeSeries> _series;
+        private List<IAnimeSeries> _series = new();
 
         public ImmutableDictionary<Guid, IAnimeEpisode> Episodes => _episodes.ToImmutableDictionary();
         
-        private Dictionary<Guid, IAnimeEpisode> _episodes;
+        private Dictionary<Guid, IAnimeEpisode> _episodes = new();
 
         public static DateTime? CacheCreationTime { get; set; }
     }

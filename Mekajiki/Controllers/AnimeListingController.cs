@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Mekajiki.Types;
 using Mekajiki.Data;
+using Mekajiki.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,9 +22,18 @@ namespace Mekajiki.Controllers
         }
 
         [HttpGet(Name = "GetAnimeListing")]
-        public AnimeListing Get()
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AnimeListing))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public IActionResult Get()
         {
-            return AnimeListingUtils.GetListing();
+            if (/*SecurityManager.IsUser()*/true)
+            {
+                return Ok(AnimeListingUtils.GetListing());
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 }
