@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Mekajiki.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route($"api/v1/GetAnimeListing")]
     public class AnimeListingController : ControllerBase
     {
         private readonly ILogger<AnimeListingController> _logger;
