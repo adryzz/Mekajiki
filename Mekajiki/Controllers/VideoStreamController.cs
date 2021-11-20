@@ -43,7 +43,7 @@ namespace Mekajiki.Controllers
                     return NoContent();
                 }
 
-                return PhysicalFile(episode.FilePath, "application/octet-stream", episode.FileName);
+                return PhysicalFile(episode.FilePath, "application/octet-stream", episode.FileName, true);
             }
             else
             {
