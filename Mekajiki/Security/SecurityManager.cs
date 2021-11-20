@@ -53,6 +53,7 @@ namespace Mekajiki.Security
 
                 string hash = Encoding.ASCII.GetString(sha.ComputeHash(Encoding.ASCII.GetBytes(token)));
                 users.Add(name, hash);
+                Save();
                 return token;
             }
 

@@ -24,9 +24,9 @@ namespace Mekajiki.Controllers
         [HttpGet(Name = "GetAnimeListing")]
         [ProducesResponseType(StatusCodes.Status302Found, Type = typeof(AnimeListing))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Get()
+        public IActionResult Get([FromHeader] string token)
         {
-            if (/*SecurityManager.IsUser()*/true)
+            if (SecurityManager.IsUser(token))
             {
                 return Ok(AnimeListingUtils.GetListing());
             }

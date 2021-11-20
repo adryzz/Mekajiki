@@ -24,7 +24,8 @@ namespace Mekajiki.Controllers
         [HttpPost(Name = "GenerateToken")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Get(string user, int otp)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public IActionResult Post([FromHeader] string user, [FromHeader] int otp)
         {
             try
             {
@@ -33,6 +34,10 @@ namespace Mekajiki.Controllers
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized();
+            }
+            catch (ArgumentException)
+            {
+                return Conflict();
             }
         }
     }

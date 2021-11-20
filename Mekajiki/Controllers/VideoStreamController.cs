@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Mekajiki.Data;
+using Mekajiki.Security;
 using Mekajiki.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,16 +25,23 @@ namespace Mekajiki.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Get(Guid videoId)
+        public async Task<IActionResult> Get([FromHeader] string token, Guid videoId)
         {
-            var listing = AnimeListingUtils.GetListing();
-            IAnimeEpisode episode;
-            bool found = listing.Episodes.TryGetValue(videoId, out episode);
-            if (!found)
+            if (SecurityManager.IsUser(token))
             {
-                return NotFound();
+                var listing = AnimeListingUtils.GetListing();
+                IAnimeEpisode episode;
+                bool found = listing.Episodes.TryGetValue(videoId, out episode);
+                if (!found)
+                {
+                    return NotFound();
+                }
+                return Ok();
             }
-            return Ok();
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         async Task writeToOutputStream(Stream outputStream, string filePath)
