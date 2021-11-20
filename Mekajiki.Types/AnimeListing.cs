@@ -16,15 +16,17 @@ namespace Mekajiki.Types
             set
             {
                 CacheCreationTime = DateTime.Now;
-                getEpisodes(value);
                 _series = value.ToList();
+                getEpisodes(value);
                 Cached = this;
             }
         }
+        
+        private List<IAnimeSeries> _series = new();
 
         private void getEpisodes(ImmutableArray<IAnimeSeries> episodes)
         {
-            Dictionary<Guid, IAnimeEpisode> oldEpisodes = _episodes;
+            Dictionary<Guid, IAnimeEpisode> oldEpisodes = Cached == null ?  new() : Cached._episodes;
             _episodes = new Dictionary<Guid, IAnimeEpisode>();
             for (int i = 0; i < episodes.Length; i++)
             {
@@ -48,8 +50,6 @@ namespace Mekajiki.Types
                 }
             }
         }
-
-        private List<IAnimeSeries> _series = new();
 
         [JsonIgnore]
         public ImmutableDictionary<Guid, IAnimeEpisode> Episodes => _episodes.ToImmutableDictionary();
