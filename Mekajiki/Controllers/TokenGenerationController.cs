@@ -22,7 +22,7 @@ namespace Mekajiki.Controllers
         }
 
         [HttpPost(Name = "GenerateToken")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult Post([FromHeader] string user, [FromHeader] int otp)

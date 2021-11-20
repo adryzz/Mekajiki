@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Mekajiki.Types
 {
@@ -50,6 +51,7 @@ namespace Mekajiki.Types
 
         private List<IAnimeSeries> _series = new();
 
+        [JsonIgnore]
         public ImmutableDictionary<Guid, IAnimeEpisode> Episodes => _episodes.ToImmutableDictionary();
         
         private Dictionary<Guid, IAnimeEpisode> _episodes = new();
