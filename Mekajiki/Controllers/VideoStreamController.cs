@@ -25,6 +25,7 @@ namespace Mekajiki.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Get(string token, Guid videoId)
         {
             if (SecurityManager.IsUser(token))
@@ -36,6 +37,10 @@ namespace Mekajiki.Controllers
                 if (!found)
                 {
                     return NotFound();
+                }
+                if (episode == null) //shouldn't happen, but handle it anyway
+                {
+                    return NoContent();
                 }
 
                 return PhysicalFile(episode.FilePath, "application/octet-stream", episode.FileName);
