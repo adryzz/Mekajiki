@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Mekajiki.Types;
-using Mekajiki.Data;
 using Mekajiki.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +27,7 @@ namespace Mekajiki.Controllers
             {
                 return Ok(SecurityManager.NewUser(user, otp));
             }
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
             }

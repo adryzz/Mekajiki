@@ -49,9 +49,8 @@ namespace Mekajiki.Security
             if (auth(otp))
             {
                 string token = Guid.NewGuid().ToString();
-                SHA512 sha = new SHA512Managed();
 
-                string hash = Encoding.ASCII.GetString(sha.ComputeHash(Encoding.ASCII.GetBytes(token)));
+                string hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
                 users.Add(name, hash);
                 Save();
                 return token;
@@ -62,9 +61,7 @@ namespace Mekajiki.Security
 
         public static bool IsUser(string token)
         {
-            SHA512 sha = new SHA512Managed();
-
-            string hash = Encoding.ASCII.GetString(sha.ComputeHash(Encoding.ASCII.GetBytes(token)));
+            string hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
             foreach (string s in users.Values)
             {
                 if (hash.Equals(s))

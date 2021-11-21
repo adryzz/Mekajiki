@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Mekajiki.Data;
 using Mekajiki.Security;
@@ -32,7 +31,7 @@ namespace Mekajiki.Controllers
             {
                 
                 var listing = AnimeListingUtils.GetListing();
-                IAnimeEpisode episode;
+                IAnimeEpisode? episode;
                 bool found = listing.Episodes.TryGetValue(videoId, out episode);
                 if (!found)
                 {

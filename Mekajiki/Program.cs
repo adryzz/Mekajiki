@@ -8,6 +8,9 @@ namespace Mekajiki
     public static class Program
     {
         public static Configuration Config = new Configuration();
+
+        public static DateTime StartupTime { get; } = DateTime.Now;
+
         public static void Main(string[] args)
         {
             if (Configuration.Exists("config.json"))
