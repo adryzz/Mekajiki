@@ -42,7 +42,8 @@ namespace Mekajiki.Types
                         FileName = name,
                         Name = Path.GetFileNameWithoutExtension(TextUtils.RemoveTextInBrackets(name).Trim()),
                         FilePath = episodeFile,
-                        EpisodeId = setIds ?  Guid.NewGuid() : Guid.Empty
+                        EpisodeId = setIds ?  Guid.NewGuid() : Guid.Empty,
+                        Length = new FileInfo(episodeFile).Length
                     });
                 }
             }
