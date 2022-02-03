@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mekajiki.Types", "Mekajiki.Types\Mekajiki.Types.csproj", "{9DA0B1F3-A164-4AA5-8BB9-B04DE7614D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mekajiki", "Mekajiki\Mekajiki.csproj", "{46154080-BB44-4D9E-B23E-372F6B6F95B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mekajiki.Server", "Mekajiki.Server\Mekajiki.Server.csproj", "{46154080-BB44-4D9E-B23E-372F6B6F95B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
