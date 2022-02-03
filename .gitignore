@@ -1,0 +1,8 @@
+.idea
+**/obj
+**/bin
+appsettings.json
+appsettings.Development.json
+config.json
+key.txt
+users.json
