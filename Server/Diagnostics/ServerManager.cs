@@ -1,23 +1,31 @@
+using System.Data;
 using NodaTime;
 using CircularBuffer;
 using Mekajiki.Shared;
 
 namespace Mekajiki.Server.Diagnostics;
 
-public class ServerManager
+public static class ServerManager
 {
+    private static Timer _timer = new Timer(_callback);
+
     public const int BufferSize = 64;
 
-    public Duration Uptime { get; private set; }
-    public CircularBuffer<(ulong, ulong)> MemoryInfo { get; } = new(BufferSize);
+    public static Duration Uptime { get; private set; }
+    public static CircularBuffer<(ulong, ulong)> MemoryInfo { get; } = new(BufferSize);
 
-    public CircularBuffer<int> Load { get; } = new(BufferSize);
+    public static CircularBuffer<int> Load { get; } = new(BufferSize);
 
-    public CircularBuffer<int> Temperature { get; } = new CircularBuffer<int>(BufferSize);
+    public static CircularBuffer<int> Temperature { get; } = new CircularBuffer<int>(BufferSize);
     
-    public SystemInfoDataPoint? Latest { get; private set; }
+    public static SystemInfoDataPoint? Latest { get; private set; }
 
-    public SystemInfoDataPoint Update()
+    private static void _callback(object? state)
+    {
+        Latest = Update();
+    }
+    
+    public static SystemInfoDataPoint Update()
     {
         SystemInfoDataPoint p = new SystemInfoDataPoint();
         
@@ -37,8 +45,7 @@ public class ServerManager
             var temp = File.ReadAllText("/sys/class/thermal/thermal_zone0/temp");
             p.Temp = int.Parse(temp);
             Temperature.PushFront(p.Temp);
-
-        Latest = p;
+            
         return p;
     }
 }
