@@ -2,13 +2,13 @@
 @using Mekajiki.Shared
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Anime listing</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Anime listing</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (listing == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -17,20 +17,18 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Name</th>
+                <th>DirName</th>
+                <th>SeasonCount</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var series in listing.Series)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@series.Name</td>
+                    <td>@series.DirectoryName</td>
+                    <td>@series.Seasons.Count</td>
                 </tr>
             }
         </tbody>
@@ -38,10 +36,10 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private AnimeListing? listing;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        listing = await Http.GetFromJsonAsync<AnimeListing>("GetAnimeListing");
     }
 }
