@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Shared\Mekajiki.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared" />
+  </ItemGroup>
+
 </Project>
