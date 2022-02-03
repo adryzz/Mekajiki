@@ -12,17 +12,11 @@ public static class ServerManager
     public const int BufferSize = 64;
 
     public static Duration Uptime { get; private set; }
-    public static CircularBuffer<(ulong, ulong)> MemoryInfo { get; } = new(BufferSize);
-
-    public static CircularBuffer<int> Load { get; } = new(BufferSize);
-
-    public static CircularBuffer<int> Temperature { get; } = new CircularBuffer<int>(BufferSize);
-    
-    public static SystemInfoDataPoint? Latest { get; private set; }
+    public static CircularBuffer<SystemInfoDataPoint> MemoryInfo { get; } = new(BufferSize);
 
     private static void _callback(object? state)
     {
-        Latest = Update();
+        MemoryInfo.PushFront(Update());
     }
     
     public static SystemInfoDataPoint Update()
@@ -36,16 +30,13 @@ public static class ServerManager
         p.TotalMem = data.totalram;
 
         p.MemUsage = data.totalram - data.freeram;
-        MemoryInfo.PushFront((p.TotalMem, p.MemUsage));
 
         p.CpuUsage = 0;
-        Load.PushFront(p.CpuUsage);
-        
+
         if (File.Exists("/sys/class/thermal/thermal_zone0/temp")) ;
             var temp = File.ReadAllText("/sys/class/thermal/thermal_zone0/temp");
             p.Temp = int.Parse(temp);
-            Temperature.PushFront(p.Temp);
-            
+
         return p;
     }
 }
