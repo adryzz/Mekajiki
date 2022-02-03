@@ -7,7 +7,7 @@ namespace Mekajiki.Server.Security;
 
 public static class SecurityManager
 {
-    private static Dictionary<string, string> users = new();
+    private static List<User> users = new();
     private static string key = "";
 
     public static void Initialize()
@@ -16,7 +16,7 @@ public static class SecurityManager
         {
             var jsonUtf8Bytes = File.ReadAllBytes("users.json");
             var utf8Reader = new Utf8JsonReader(jsonUtf8Bytes);
-            users = JsonSerializer.Deserialize<Dictionary<string, string>>(ref utf8Reader);
+            users = JsonSerializer.Deserialize<List<User>>(ref utf8Reader);
         }
         else
         {
@@ -47,7 +47,7 @@ public static class SecurityManager
             var token = Guid.NewGuid().ToString();
 
             var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
-            users.Add(name, hash);
+            users.Add(new User {Name = name, TotpTokenHash = hash});
             Save();
             return token;
         }
@@ -58,8 +58,8 @@ public static class SecurityManager
     public static bool IsUser(string token)
     {
         var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
-        foreach (var s in users.Values)
-            if (hash.Equals(s))
+        foreach (var s in users)
+            if (hash.Equals(s.TotpTokenHash))
                 return true;
 
         return false;
