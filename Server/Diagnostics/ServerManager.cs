@@ -10,13 +10,11 @@ public static class ServerManager
     private static Timer _timer = new Timer(_callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 
     public const int BufferSize = 64;
-
-    public static Duration Uptime { get; private set; }
-    public static CircularBuffer<SystemInfoDataPoint> MemoryInfo { get; } = new(BufferSize);
+    public static CircularBuffer<SystemInfoDataPoint> SystemInfo { get; } = new(BufferSize);
 
     private static void _callback(object? state)
     {
-        MemoryInfo.PushFront(Update());
+        SystemInfo.PushFront(Update());
     }
     
     public static SystemInfoDataPoint Update()
@@ -24,8 +22,8 @@ public static class ServerManager
         SystemInfoDataPoint p = new SystemInfoDataPoint();
         
         var data = systemInfo.sysinfo();
-        Uptime = Duration.FromSeconds(data.uptime);
-        p.Uptime = Uptime;
+        
+        p.Uptime = Duration.FromSeconds(data.uptime);
         
         p.TotalMem = data.totalram;
 
