@@ -7,7 +7,7 @@ namespace Mekajiki.Server.Diagnostics;
 
 public static class ServerManager
 {
-    private static Timer _timer = new Timer(_callback);
+    private static Timer _timer = new Timer(_callback, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 
     public const int BufferSize = 64;
 
