@@ -7,8 +7,8 @@ namespace Mekajiki.Server.Security;
 
 public static class SecurityManager
 {
-    private static List<User> users = new();
-    private static string key = "";
+    private static List<User> _users = new();
+    private static string _key = "";
 
     public static void Initialize()
     {
@@ -16,7 +16,7 @@ public static class SecurityManager
         {
             var jsonUtf8Bytes = File.ReadAllBytes("users.json");
             var utf8Reader = new Utf8JsonReader(jsonUtf8Bytes);
-            users = JsonSerializer.Deserialize<List<User>>(ref utf8Reader);
+            _users = JsonSerializer.Deserialize<List<User>>(ref utf8Reader);
         }
         else
         {
@@ -25,51 +25,112 @@ public static class SecurityManager
 
         if (File.Exists("key.txt"))
         {
-            key = File.ReadAllText("key.txt");
+            _key = File.ReadAllText("key.txt");
         }
         else
         {
-            key = Guid.NewGuid().ToString();
-            File.WriteAllText("key.txt", key);
+            _key = Guid.NewGuid().ToString();
+            File.WriteAllText("key.txt", _key);
         }
     }
 
     public static void Save()
     {
-        var jsonString = JsonSerializer.Serialize(users);
+        var jsonString = JsonSerializer.Serialize(_users);
         File.WriteAllText("users.json", jsonString);
     }
+    
+    
 
-    public static string NewUser(string name, int otp)
+    public static string NewUserTotp(string name, string serverToken, string? userAgent, out string manualKey, out string image)
     {
-        if (auth(otp))
+        if (serverToken != _key)
+            throw new UnauthorizedAccessException();
+        
+        if (_users.Any(x => x.Name == name))
+            throw new ArgumentException();
+        
+        var token = Guid.NewGuid().ToString();
+        var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
+        
+        var seed = Guid.NewGuid().ToString();
+        
+        var qrGenerator = new TotpSetupGenerator();
+        var qrCode = qrGenerator.Generate(
+            "Mekajiki",
+            name,
+            seed
+        );
+        
+        image = qrCode.QrCodeImage;
+        manualKey = qrCode.ManualSetupKey;
+        
+        _users.Add(new User
         {
-            var token = Guid.NewGuid().ToString();
+            Name = name,
+            TotpSeed = seed,
+            OpenSessions = new List<Session>()
+            {
+                new Session
+                {
+                    UserAgent = userAgent,
+                    TokenHash = hash
+                }
+            }
+        });
 
-            var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
-            users.Add(new User {Name = name, TotpTokenHash = hash});
-            Save();
-            return token;
-        }
-
-        throw new UnauthorizedAccessException();
+        Save();
+        return token;
     }
 
     public static bool IsUser(string token)
     {
         var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
-        foreach (var s in users)
-            if (hash.Equals(s.TotpTokenHash))
-                return true;
+        
+        foreach (var s in _users)
+            if (s.OpenSessions != null)
+                if (s.OpenSessions.Any(x => x.TokenHash == hash))
+                        return true;
 
         return false;
     }
 
-    private static bool auth(int otp)
+    public static User? GetUser(string token)
     {
+        var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
+        
+        foreach (var s in _users)
+            if (s.OpenSessions != null)
+                if (s.OpenSessions.Any(x => x.TokenHash == hash))
+                    return s;
+
+        return null;
+    }
+
+    public static string TotpAuthenticate(string name, int otp, string? userAgent)
+    {
+        if (otp < 100000 || otp > 999999)
+            throw new ArgumentException();
+        
+        User? user = _users.Find(x => x.Name == name);
+
+        if (user == null)
+            throw new ArgumentException();
+        
         var gen = new TotpGenerator();
         var val = new TotpValidator(gen);
 
-        return val.Validate(key, otp);
+        if (!val.Validate(user.TotpSeed, otp))
+            throw new UnauthorizedAccessException();
+        
+        var token = Guid.NewGuid().ToString();
+        var hash = Encoding.ASCII.GetString(SHA512.HashData(Encoding.ASCII.GetBytes(token)));
+        new Session
+        {
+            UserAgent = userAgent,
+            TokenHash = hash
+        };
+        
+        return token;
     }
 }

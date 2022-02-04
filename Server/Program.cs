@@ -46,7 +46,7 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
-
+        
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
 
